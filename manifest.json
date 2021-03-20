@@ -14,16 +14,15 @@
 	"content_scripts":[
 	{
 	"js":["content.js"],
-	"matches":["https://ranker.com/"],
+	"matches":["<all_urls>"],
 	"run_at":"document_idle"
 	}
 	],
     "background":{
         "scripts":["background.js"],
-		"matches":["https://ranker.com/"]
+		"matches":["<all_urls>"]
     },
-    "permissions":["tabs","http://ranker.com/",
-        "https://ranker.com/"
+    "permissions":["tabs","<all_urls>"
 		,"storage",
 		"downloads"
 		]
