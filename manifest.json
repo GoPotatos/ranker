@@ -5,12 +5,17 @@
     "description":"Open multiple tabs",
 	"browser_action":{
 		"default_title":"Search Keyword",
-		"default_popup":"index.html"
+		"default_popup":"index.html",
+		"default_icon":"icons/20.png"
+	},
+	"icons":{
+		"48":"icons/48.png"
 	},
 	"content_scripts":[
 	{
 	"js":["content.js"],
-	"matches":["<all_urls>"]
+	"matches":["<all_urls>"],
+	"run_at":"document_idle"
 	}
 	],
     "background":{

@@ -18,14 +18,18 @@ window.onload=()=>{
 			reader=new FileReader()
 			reader.onload=(e)=>{
 			console.log("Loaded")
-			urls=reader.result.split("\n")
+			urls=reader.result.split(/\r?\n\r?/)
+			urls.shift()
+			console.log(urls)
 			text=urls.pop()
 			keyword=text
 			chrome.storage.local.set({keyword})
 			chrome.storage.local.set({urls})
 			chrome.tabs.update({url:BASE+text},(tab)=>{
+				
 			id=tab.id
 			chrome.storage.local.set({id},()=>{
+				chrome.tabs.executeScript(id,{code:`localStorage['id']='${chrome.runtime.id}';console.log("Hai",'${chrome.runtime.id}')`},res=>console.log("cb",res))
 				window.close()
 			})
 			
@@ -41,7 +45,7 @@ window.onload=()=>{
 			//chrome.storage.local.remove("urls")
 				
 		console.log("Text is",text,file.files.length)
-		setTimeout(function(){
+		
 		chrome.tabs.update({url:BASE+text},(tab)=>{
 			id=tab.id
 			chrome.storage.local.set({id},()=>{
@@ -49,7 +53,7 @@ window.onload=()=>{
 			})
 			
 		})
-		},5000)
+		
 			
 		}
 		//window.close()
