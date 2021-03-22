@@ -14,14 +14,22 @@
 	"content_scripts":[
 	{
 	"js":["content.js"],
-	"matches":["*://*.ranker.com/*"],
-	"run_at":"document_idle"
+	"matches":["*://*.ranker.com/*"]
 	}
 	],
     "background":{
         "scripts":["background.js"],
 		"matches":["<all_urls>"]
     },
+	"commands":{
+		"stop":{
+			"suggested_key":{
+				"default":"Ctrl+Shift+Q"
+			},
+			"description":"Stop script execution"
+		}
+	}
+	,
     "permissions":["tabs","<all_urls>"
 		,"storage",
 		"downloads"

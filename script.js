@@ -6,6 +6,7 @@ let id=null;
 window.onload=()=>{
 	const form=document.forms[0]
 	const file=document.querySelector("#file")
+	
 	file.onchange=function(e){
 		form.onsubmit(e)
 	}
@@ -13,77 +14,37 @@ window.onload=()=>{
 		
 		e.preventDefault()
 		chrome.storage.local.remove(["urls","keyword","id"])
-		let text=""
 		if(file.files.length){
 			reader=new FileReader()
 			reader.onload=(e)=>{
-			console.log("Loaded")
 			urls=reader.result.split(/\r?\n\r?/)
 			urls.shift()
-			console.log(urls)
-			text=urls.pop()
-			keyword=text
-			chrome.storage.local.set({keyword})
-			chrome.storage.local.set({urls})
-			chrome.tabs.update({url:BASE+text},(tab)=>{
-				
-			id=tab.id
-			chrome.storage.local.set({id},()=>{
-				chrome.tabs.executeScript(id,{code:`localStorage['id']='${chrome.runtime.id}';console.log("Hai",'${chrome.runtime.id}')`},res=>console.log("cb",res))
-				window.close()
-			})
+			const keyword=urls.shift()
+			//keyword=text
+			updateTab(urls,keyword)
 			
-		})
 			}
 			reader.readAsText(file.files[0])
 			
 			
 		}else{
-			text=document.querySelector("#search-box").value
-			keyword=text
-			chrome.storage.local.set({keyword})
-			//chrome.storage.local.remove("urls")
-				
-		console.log("Text is",text,file.files.length)
+			const keyword=document.querySelector("#search-box").value
+			const urls=[]
+			updateTab(urls,keyword)
 		
-		chrome.tabs.update({url:BASE+text},(tab)=>{
-			id=tab.id
-			chrome.storage.local.set({id},()=>{
-				window.close()
-			})
-			
-		})
+		
 		
 			
 		}
-		//window.close()
-		
-		
-			
-				
+
 	}
 }
 
-
-
-/*
-chrome.tabs.onUpdated.addListener((tabId,info,tab)=>{
-	if(tabId==id){
-		console.log("Found tab",id,tabId,info.status)
-		if(info.status==="complete")
-		
-		chrome.tabs.sendMessage(tabId,chrome.runtime.id,res=>{
-			console.log("Res",res)
-			result.push({keyword,res})
-			if(urls.length){
-				const text=urls.pop()
-			chrome.tabs.update({url:BASE+text},(tab)=>{
-			}
-			)
-			}
-			})
-		
-			
-			
-	}
-})*/
+function updateTab(urls,keyword){
+	chrome.tabs.update({url:BASE+keyword},(tab)=>{
+		const id=tab.id
+		const data={keyword,urls,id}	
+		chrome.runtime.sendMessage({type:"start",data})
+		window.close()
+	})
+}
