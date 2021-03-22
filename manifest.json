@@ -30,8 +30,5 @@
 		}
 	}
 	,
-    "permissions":["tabs","<all_urls>"
-		,"storage",
-		"downloads"
-		]
+    "permissions":["tabs","<all_urls>","downloads"]
 }

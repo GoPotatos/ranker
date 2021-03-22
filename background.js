@@ -26,6 +26,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 	if(message.type==="start"){
 		({keyword,urls,id}=message.data)
 	}
+	
 })
 
 
@@ -48,5 +49,11 @@ chrome.commands.onCommand.addListener((command)=>{
 		chrome.tabs.discard(id,()=>{
 			downloadResult()
 		})
+	}
+})
+
+chrome.tabs.onRemoved.addListener((tabId,removed)=>{
+	if(id===tabId){
+		id=0
 	}
 })

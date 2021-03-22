@@ -13,7 +13,6 @@ window.onload=()=>{
 	form.onsubmit=function(e){
 		
 		e.preventDefault()
-		chrome.storage.local.remove(["urls","keyword","id"])
 		if(file.files.length){
 			reader=new FileReader()
 			reader.onload=(e)=>{
