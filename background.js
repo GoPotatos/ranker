@@ -1,5 +1,5 @@
 const BASE='.ranker.com/?keywords='
-const SCRIPT_ID="https://script.google.com/macros/s/AKfycbwsRhwBMeq7AVwJRiuIM616-WvrZkBYKwgHHz4sLPRGKt9EPdq0DqJv5paJuN7QsoAxEg/exec"
+const SCRIPT_ID=""
 let subdomain="results."
 let result=[]
 let keyword="";
