@@ -1,11 +1,16 @@
-const BASE='http://results.ranker.com/?keywords='
+const BASE='.ranker.com/?keywords='
 urls=[]
 let result=[]
 let keyword="";
 let id=null;
+let subdomain="results";
 window.onload=()=>{
 	const form=document.forms[0]
 	const file=document.querySelector("#file")
+	const subdomainBox=document.querySelector("#subdomain-box")
+	subdomainBox.onchange=function(e){
+		subdomain=e.target.value;
+	}
 	
 	file.onchange=function(e){
 		form.onsubmit(e)
@@ -40,9 +45,10 @@ window.onload=()=>{
 }
 
 function updateTab(urls,keyword){
-	chrome.tabs.update({url:BASE+keyword},(tab)=>{
+	const url="https://"+subdomain+BASE+keyword;
+	chrome.tabs.update({url},(tab)=>{
 		const id=tab.id
-		const data={keyword,urls,id}	
+		const data={keyword,urls,id,subdomain}	
 		chrome.runtime.sendMessage({type:"start",data})
 		window.close()
 	})

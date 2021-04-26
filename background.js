@@ -1,18 +1,22 @@
-const BASE='http://results.ranker.com/?keywords='
+const BASE='.ranker.com/?keywords='
+const SCRIPT_ID=""
+let subdomain="results."
 let result=[]
 let keyword="";
 let id=0;
 let urls=[];
-
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 	sendResponse("From background")
 	if(id){
 		if(message.type==="links"){
 			//console.log("Got links",message.links)
-			result.push({keyword,res:message.links})
+			const timestamp=getTimeNow();
+			const date=(new Date()).toDateString()
+			result.push({keyword,date,timestamp,res:message.links})
 			if(urls.length){
 				keyword=urls.shift()
-				chrome.tabs.update(id,{url:BASE+keyword},(tab)=>{})
+				const url="https://"+subdomain+BASE+keyword
+				chrome.tabs.update(id,{url},(tab)=>{})
 			}else{
 					downloadResult()
 			}
@@ -24,17 +28,27 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 		}
 	
 	if(message.type==="start"){
-		({keyword,urls,id}=message.data)
+		({keyword,urls,id,subdomain}=message.data)
 	}
 	
 })
 
 
+function getTimeNow(delemiter=":"){
+	const now=new Date()
+	const timestamp=now.getUTCHours()+delemiter+now.getUTCMinutes()+delemiter+now.getUTCSeconds();
+	return timestamp;
+}
+
 
 function downloadResult(){
-	result=result.map(item=>([JSON.stringify(item.keyword),...item.res]).join(","))
-	result.splice(0,0,"keyword, url1,url2,url3,url4,url5,url6")
-	result=result.join("\n")
+	const body=result.map(item=>[item.keyword,item.date,item.timestamp,...item.res])
+	
+	result=result.map(item=>([JSON.stringify(item.keyword),item.date,item.timestamp,...item.res]).join(","))
+	result.splice(0,0,"keyword,date,time, url1,url2,url3,url4,url5,url6")
+	result=result.join("\n")	
+	fetch(SCRIPT_ID,{method:"POST",headers:{"content-type":"Application/json"},body:JSON.stringify(body)})
+	.catch(()=>console.log("Error during sending email"))
 	blob=new Blob([result],{type:"text/csv"});
 	dataUrl=URL.createObjectURL(blob)
 	result=[]
